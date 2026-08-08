@@ -1,4 +1,4 @@
-title: Incus 7.3 has been released
+title: Incus 7.3 リリースのお知らせ
 date: 2026/07/31 18:07
 origin: https://discuss.linuxcontainers.org/t/incus-7-3-has-been-released/27033
 content: |-
@@ -28,7 +28,7 @@ content: |-
 
   - [CVE-2026-62867](https://github.com/lxc/incus/security/advisories/GHSA-q7xw-r4w2-2wcm) (critical) - ストレージボリュームの `block.create_options` を経由した引数インジェクション <!-- Argument injection through storage volume `block.create_options` -->
   - [CVE-2026-62940](https://github.com/lxc/incus/security/advisories/GHSA-qw5c-v953-38gw) (critical) - インスタンスの移行設定の上書きによるプロジェクト制限のバイパス <!-- Project restriction bypass via instance migration config override -->
-  - [CVE-2026-62941](https://github.com/lxc/incus/security/advisories/GHSA-mq9x-prm8-3vpw) (critical) - プロジェクト間のインスタンスコピーを介したのプロジェクト制限のバイパス <!-- Project restriction bypass via cross-project instance copy -->
+  - [CVE-2026-62941](https://github.com/lxc/incus/security/advisories/GHSA-mq9x-prm8-3vpw) (critical) - プロジェクト間のインスタンスコピーを介したプロジェクト制限のバイパス <!-- Project restriction bypass via cross-project instance copy -->
   - [CVE-2026-63125](https://github.com/lxc/incus/security/advisories/GHSA-6rqx-22hc-qm36) (critical) - 細工されたイメージ内の `backup.yaml` を介したホスト上の任意のファイルへの書き込み <!-- Arbitrary file write on host via `backup.yaml` symlink in crafted image -->
   - [CVE-2026-63343](https://github.com/lxc/incus/security/advisories/GHSA-fmjx-5j3g-997p) (critical) - 細工されたイメージ内の `metadata.yaml` を介したホスト上の任意のファイルの読み書き <!-- Arbitrary file read+write on host via `metadata.yaml` symlink in crafted image -->
   - [GHSA-26gp-p5fw-3r2h](https://github.com/lxc/incus/security/advisories/GHSA-26gp-p5fw-3r2h) (critical) - インスタンスバックアップのインポートにおけるパストラバーサルによるホスト上の任意のファイルへの書き込み <!-- Arbitrary file write on host via path traversal in instance backup import -->
@@ -36,7 +36,7 @@ content: |-
   - [GHSA-7fj9-65v4-rp7h](https://github.com/lxc/incus/security/advisories/GHSA-7fj9-65v4-rp7h) (critical) - 画像埋め込みのシンボリックリンクと `oci.dns.*` における改行インジェクションによるホスト上の任意のファイルへの書き込み <!-- Arbitrary file write on host via image-planted symlinks and `oci.dns.*` newline injection -->
   - [GHSA-p2v3-6wvc-cv3p](https://github.com/lxc/incus/security/advisories/GHSA-p2v3-6wvc-cv3p) (critical) - イメージフィンガープリントのパストラバーサルによるホスト上の任意のファイルへの書き込み <!-- Arbitrary file write on host via image fingerprint path traversal -->
   - [GHSA-4qxq-p5hm-3q3p](https://github.com/lxc/incus/security/advisories/GHSA-4qxq-p5hm-3q3p) (high) - VM テンプレートのパストラバーサルによるホスト上の任意のファイルの読み書き <!-- Arbitrary file read+write on host via VM template path traversal -->
-  - [GHSA-m3j6-p3v3-qmjv](https://github.com/lxc/incus/security/advisories/GHSA-m3j6-p3v3-qmjv) (high) - `nvidia.driver.capabilities` を介したコンテナ設定にたいする改行インジェクション <!-- Container configuration newline injection through `nvidia.driver.capabilities` -->
+  - [GHSA-m3j6-p3v3-qmjv](https://github.com/lxc/incus/security/advisories/GHSA-m3j6-p3v3-qmjv) (high) - `nvidia.driver.capabilities` を介したコンテナ設定に対する改行インジェクション <!-- Container configuration newline injection through `nvidia.driver.capabilities` -->
   - [CVE-2026-62313](https://github.com/lxc/incus/security/advisories/GHSA-53cg-qvg7-m8vg) (medium) - `security.idmap.isolated` を省略することによるプロジェクト隔離制限のバイパス <!-- Project isolation restriction bypass by omitting `security.idmap.isolated` -->
   - [GHSA-6v6x-387m-rj4w](https://github.com/lxc/incus/security/advisories/GHSA-6v6x-387m-rj4w) (medium) - ネットワークアドレスセットのプロジェクト制限のバイパス <!-- Project restriction bypass on network address sets -->
 
@@ -77,7 +77,7 @@ content: |-
   <!--
   Incus now allows direct NVRAM interactions for virtual machines.
   -->
-  Incus で、仮想マシンの NVRAM を直接の操作できるようになりました。
+  Incus で、仮想マシンの NVRAM を直接操作できるようになりました。
 
   <!--
   This is exposed through the CLI as `incus low-level nvram` and allows for both read and write access to the NVRAM.
@@ -247,7 +247,7 @@ content: |-
   <!--
   The VM agent can now run in environments that lack `virtio-vsock` by instead reporting OS data through a serial link. This allows at least correct reporting of IP configuration and OS in environments that historically couldn't run the agent at all.
   -->
-  VM エージェントが、`virtio-vsock` が利用できない環境でも、代わりにシリアルリンク経由で OS 情報を報告ことにより実行できるようになりました。これにより、従来はエージェントを全く実行できなかった環境でも、IP 設定や OS 情報を正しく報告できるようになります。
+  VM エージェントが、`virtio-vsock` が利用できない環境でも、代わりにシリアルリンク経由で OS 情報を報告することにより実行できるようになりました。これにより、従来はエージェントを全く実行できなかった環境でも、IP 設定や OS 情報を正しく報告できるようになります。
 
   ## ネットワーク割り当ての改良 <!-- Network allocations improvements -->
   <!--
@@ -296,7 +296,7 @@ content: |-
   <!--
   Additionally, it's now possible to set both a byte/s limit and an IOPS limit at the same time on `disk` and `unix-block` devices by using a comma separated list of values:
   -->
-  さらに、カンマ区切りの値のリストを使うことで、`disk` と `unix-block` デバイスに対して同時にバイト/秒の制限と IOPS の制限を同時に設定できるようになりました:
+  さらに、カンマ区切りの値のリストを使うことで、`disk` と `unix-block` デバイスに対してバイト/秒の制限と IOPS の制限を同時に設定できるようになりました:
 
       incus config device set my-vm data limits.read=30MiB,1000iops
 
