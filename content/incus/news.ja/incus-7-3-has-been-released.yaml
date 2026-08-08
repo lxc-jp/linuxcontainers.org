@@ -1,0 +1,914 @@
+title: Incus 7.3 リリースのお知らせ
+date: 2026/07/31 18:07
+origin: https://discuss.linuxcontainers.org/t/incus-7-3-has-been-released/27033
+content: |-
+  <!--
+  The Incus team is pleased to announce the release of Incus 7.3!
+  -->
+  Incus チームは、Incus 7.3 のリリースのアナウンスができてうれしいです!
+
+  <!--
+  Another busy release for us, both on the feature front with quite a lot of exciting new features as well as on the performance, bugfix and securty front.
+  -->
+  いつもと同様に充実した内容のリリースです。多数の魅力的な新機能が追加され、パフォーマンスの向上、バグフィックス、セキュリティ強化の面でも多くの改善が図られています。
+
+  [![image|690x308](https://discuss.linuxcontainers.org/uploads/default/original/2X/e/e1437e2bc8aaad2a865ff8ed9ff463991d41b1ed.png)](https://linuxcontainers.org/incus/try-it/)
+
+  <!--
+  As usual, you can try Incus for yourself online: [Linux Containers - Incus - Try it online](https://linuxcontainers.org/incus/try-it/)
+  -->
+  いつものように、オンラインでご自身で試せます: [Linux Containers - Incus - オンラインでの試用](https://linuxcontainers.org/incus/try-it/)
+
+  # セキュリティ修正 <!-- Security fixes -->
+
+  <!--
+  This release fixes 13 security issues:
+  -->
+  このリリースでは、13 の脆弱性を修正しました:
+
+  - [CVE-2026-62867](https://github.com/lxc/incus/security/advisories/GHSA-q7xw-r4w2-2wcm) (critical) - ストレージボリュームの `block.create_options` を経由した引数インジェクション <!-- Argument injection through storage volume `block.create_options` -->
+  - [CVE-2026-62940](https://github.com/lxc/incus/security/advisories/GHSA-qw5c-v953-38gw) (critical) - インスタンスの移行設定の上書きによるプロジェクト制限のバイパス <!-- Project restriction bypass via instance migration config override -->
+  - [CVE-2026-62941](https://github.com/lxc/incus/security/advisories/GHSA-mq9x-prm8-3vpw) (critical) - プロジェクト間のインスタンスコピーを介したプロジェクト制限のバイパス <!-- Project restriction bypass via cross-project instance copy -->
+  - [CVE-2026-63125](https://github.com/lxc/incus/security/advisories/GHSA-6rqx-22hc-qm36) (critical) - 細工されたイメージ内の `backup.yaml` を介したホスト上の任意のファイルへの書き込み <!-- Arbitrary file write on host via `backup.yaml` symlink in crafted image -->
+  - [CVE-2026-63343](https://github.com/lxc/incus/security/advisories/GHSA-fmjx-5j3g-997p) (critical) - 細工されたイメージ内の `metadata.yaml` を介したホスト上の任意のファイルの読み書き <!-- Arbitrary file read+write on host via `metadata.yaml` symlink in crafted image -->
+  - [GHSA-26gp-p5fw-3r2h](https://github.com/lxc/incus/security/advisories/GHSA-26gp-p5fw-3r2h) (critical) - インスタンスバックアップのインポートにおけるパストラバーサルによるホスト上の任意のファイルへの書き込み <!-- Arbitrary file write on host via path traversal in instance backup import -->
+  - [GHSA-67qw-68v3-36h6](https://github.com/lxc/incus/security/advisories/GHSA-67qw-68v3-36h6) (critical) - カスタムボリュームのインポートにおけるパストラバーサルによるホスト上の任意のファイルへの書き込み <!-- Arbitrary file write on host via path traversal in custom volume import -->
+  - [GHSA-7fj9-65v4-rp7h](https://github.com/lxc/incus/security/advisories/GHSA-7fj9-65v4-rp7h) (critical) - 画像埋め込みのシンボリックリンクと `oci.dns.*` における改行インジェクションによるホスト上の任意のファイルへの書き込み <!-- Arbitrary file write on host via image-planted symlinks and `oci.dns.*` newline injection -->
+  - [GHSA-p2v3-6wvc-cv3p](https://github.com/lxc/incus/security/advisories/GHSA-p2v3-6wvc-cv3p) (critical) - イメージフィンガープリントのパストラバーサルによるホスト上の任意のファイルへの書き込み <!-- Arbitrary file write on host via image fingerprint path traversal -->
+  - [GHSA-4qxq-p5hm-3q3p](https://github.com/lxc/incus/security/advisories/GHSA-4qxq-p5hm-3q3p) (high) - VM テンプレートのパストラバーサルによるホスト上の任意のファイルの読み書き <!-- Arbitrary file read+write on host via VM template path traversal -->
+  - [GHSA-m3j6-p3v3-qmjv](https://github.com/lxc/incus/security/advisories/GHSA-m3j6-p3v3-qmjv) (high) - `nvidia.driver.capabilities` を介したコンテナ設定に対する改行インジェクション <!-- Container configuration newline injection through `nvidia.driver.capabilities` -->
+  - [CVE-2026-62313](https://github.com/lxc/incus/security/advisories/GHSA-53cg-qvg7-m8vg) (medium) - `security.idmap.isolated` を省略することによるプロジェクト隔離制限のバイパス <!-- Project isolation restriction bypass by omitting `security.idmap.isolated` -->
+  - [GHSA-6v6x-387m-rj4w](https://github.com/lxc/incus/security/advisories/GHSA-6v6x-387m-rj4w) (medium) - ネットワークアドレスセットのプロジェクト制限のバイパス <!-- Project restriction bypass on network address sets -->
+
+  <!--
+  Note that some of the above don't yet have CVE assigned. This is due to Github having a 3-4 weeks backlog on CVE assignments right now. We have requested CVEs for all the issues above and they will be automatically added to the relevant GHSA once allocated.
+  -->
+  上記の中にはまだ CVE が割り当てられていないものがあることに注意してください。これは現在、GitHub で CVE 割り当てに 3-4 週間の遅延が発生しているためです。上記のすべてに CVE をリクエストしており、割り当てられ次第、関連する GHSA に自動的に追加されます。
+
+  # 新機能 <!-- New features -->
+  ## DRM ネイティブコンテキストによる仮想マシン向けの GPU 共有 <!-- GPU sharing for virtual machines through DRM native context -->
+  <!--
+  A new `native-context` GPU type is now available for virtual machines.
+  -->
+  新たに `native-context` タイプの GPU が仮想マシンで利用できるようになりました。
+
+  <!--
+  This makes use of `virglrenderer` and the `virtio-gpu` type to provide GPU 3D acceleration.
+  -->
+  この機能は、`virglrenderer` と `virtio-gpu` タイプを使い、GPU 3D アクセラレーション処理を提供します。
+
+  <!--
+  Unlike full GPU passthrough, this can be used by multiple virtual machines in parallel.
+  Currently, only Linux appears to have drivers fully supporting this, so Windows guests remain unaccelerated.
+  -->
+  フル GPU パススルーと異なり、これは複数の仮想マシンで並列して使えます。
+  現時点では、Linux のみがこれを完全にサポートするドライバーを提供しているようで、Windows ゲストはアクセラレーションの対象外です。
+
+  <!--
+  This can be enabled with:
+  -->
+  これは、次のように有効にできます:
+
+      stgraber@vorash:~$ incus config device add v1 gpu0 gpu gputype=native-context
+
+  ドキュメント <!-- Documentation -->: https://linuxcontainers.org/incus/docs/main/reference/devices_gpu/
+
+  ## 仮想マシン向けの UEFI 変数管理 <!-- UEFI variable management for virtual machines -->
+  <!--
+  Incus now allows direct NVRAM interactions for virtual machines.
+  -->
+  Incus で、仮想マシンの NVRAM を直接操作できるようになりました。
+
+  <!--
+  This is exposed through the CLI as `incus low-level nvram` and allows for both read and write access to the NVRAM.
+  -->
+  この機能は、CLI の `incus low-level nvram` コマンドを通して提供され、NVRAM の読み取りと書き込みが可能です。
+
+  <!--
+  Most UEFI NVRAM configuration keys can be parsed and updated, allowing for modification of the boot devices, boot order and more. Write operation require a stopped VM. A follow-up will focus specifically on UEFI Secure Boot key provisioning.
+  -->
+  UEFI NVRAM のほとんどの設定を読み取り、更新できるので、ブートデバイスの変更やブート順序が変更できます。書き込み操作は、VM が停止している必要があります。UEFI のセキュアブートのキープロビジョニングに特化した機能については、後日改めて対応する予定です。
+
+  <!--
+  Additionally, a new `rebuild-nvram` repair action was added to `incus low-level repair`, making it easy to reset a virtual machine's UEFI NVRAM to a clean state.
+  -->
+  さらに、`incus low-level repair` に新たに `rebuild-nvram` という修復アクションが追加されました。これにより、仮想マシンの UEFI NVRAM をクリーンな状態に簡単にリセットできるようになりました。
+
+      stgraber@vorash:~$ incus launch images:debian/13 v1 --vm
+      Launching v1
+      stgraber@vorash:~$ incus low-level nvram get v1 Boot0000
+      binary: CQEAACwAQgBvAG8AdABNAGEAbgBhAGcAZQByAE0AZQBuAHUAQQBwAHAAAAAEBxQAyb24fOv4NE+q6j7kr2UWoQQGFADcW8Lu8meVTbHV+BsgOdEdf/8EAA==
+      data:
+        active: true
+        category: app
+        description: BootManagerMenuApp
+        force_reconnect: false
+        hidden: true
+        paths:
+          - - Fv(7cb8bdc9-f8eb-4f34-aaea-3ee4af6516a1)/FvFile(eec25bdc-67f2-4d95-b1d5-f81b2039d11d)
+      attributes:
+        - NON_VOLATILE
+        - BOOTSERVICE_ACCESS
+        - RUNTIME_ACCESS
+
+  ## インスタンスポートフォワーディング <!-- Instance port forwarding -->
+  <!--
+  A new `incus port-forward` command makes it easy to access a TCP service running inside of an instance.
+  -->
+  新たに追加された `incus port-forward` コマンドを使用すると、インスタンス内で実行されている TCP サービスに簡単にアクセスできます。
+
+  <!--
+  The CLI tool runs a local TCP listener and forwards every connection made to it to the given address and port inside of the instance or on a network attached to that instance.
+  -->
+  CLI ツールは、ローカル TCP リスナーを実行し、そのリスナーへの接続をすべて、インスタンス内部またはそのインスタンスに接続されたネットワーク上の指定されたアドレスとポートに転送します。
+
+      stgraber@vorash:~$ incus port-forward my-nginx 80 8080
+      stgraber@vorash:~$ incus port-forward my-nginx 10.0.3.1:443 0.0.0.0:8443
+
+  ## 認証設定の再設計 <!-- Reworked authorization configuration -->
+  <!--
+  The authorization configuration has moved to a new `authorization.*` namespace, with the former `openfga.*` server configuration keys now being `authorization.openfga.api.url`, `authorization.openfga.api.token` and `authorization.openfga.store.id`. Existing values are automatically migrated on upgrade.
+  -->
+  認証設定は、新たに `authorization.*` ネームスペースに移動しました。これにともない、従来の `openfga.*` サーバー設定キーは、`authorization.openfga.api.url`、`authorization.openfga.api.token`、`authorization.openfga.store.id` に変更されました。既存の設定値は、アップグレード時に自動的に移行されます。
+
+  <!--
+  This now allows us to support multiple authorization drivers in parallel and chose the provider based on the request type. This is done through a new set of keys:
+  -->
+  これにより、複数の認証ドライバーを並行してサポートし、リクエストの種類によってプロバイダーを選択できるようになりました。これは、新しいキーのセットによって実現されます:
+
+  - `authorization.client.default`: 具体的なクラスルートを持たないクライアント用ドライバー <!-- driver for clients without a more specific class route -->
+  - `authorization.client.unix`: ローカル（`unix` ソケット）クライアント用ドライバー <!-- driver for local (`unix` socket) clients -->
+  - `authorization.client.tls`: 制限なし TLS クライアント用ドライバー <!-- driver for unrestricted TLS clients -->
+  - `authorization.client.tls-restricted`: （プロジェクトスコープの）制限付き TLS クライアント用ドライバー <!-- driver for restricted (project-scoped) TLS clients -->
+  - `authorization.client.oidc`: OIDC 認証クライアント用ドライバー <!-- driver for OIDC-authenticated clients -->
+
+  <!--
+  Each key accepts one of `allow`, `deny`, `openfga` or `scriptlet`, with `tls` additionally available for restricted TLS clients.
+  -->
+  各キーは `allow`、`deny`、`openfga`、`scriptlet` のいずれかを受け付けます。さらに、制限付き TLS クライアント向けには `tls` も利用可能です。
+
+  ドキュメント <!-- Documentation -->: https://linuxcontainers.org/incus/docs/main/authorization/
+
+  ## `incus low-level` の導入 <!-- Introducing `incus low-level` -->
+  <!--
+  The `incus debug` command has been renamed to `incus low-level`.
+  -->
+  `incus debug` コマンドを `incus low-level` にリネームしました。
+
+  <!--
+  As part of that, it also gained a few new sub-commands:
+  -->
+  その一環で、いくつか新しいサブコマンドを追加しました:
+
+   - `bitmap` （仮想マシン向けダーティービットマップ管理）<!-- (dirty bitmap management for VMs) -->
+   - `nvram` （前述のとおり）<!-- (as mentioned above) -->
+   - `repair` インスタンスの修復アクション <!-- (repair actions for instances) -->
+
+  ## BGP unnumbered のサポート <!-- BGP unnumbered support -->
+  <!--
+  Incus now supports unnumbered BGP for its peering with external routers.
+  -->
+  Incus は、外部ルーターとのピアリングで Unnumbered BGP をサポートするようになりました。
+
+  <!--
+  This is done through a new `bgp.peers.NAME.interface` configuration key which is used as an alternative to `bgp.peers.NAME.address`.
+  -->
+  これは `bgp.peers.NAME.address` の代替として使用する新しい設定キー `bgp.peers.NAME.interface` によって実現されます。
+
+  <!--
+  When set, the BGP session is established over the given interface using BGP unnumbered. The peer's IPv6 link-local address is discovered automatically and IPv4 routes are exchanged using the extended next-hop capability.
+  -->
+  設定すると、指定したインターフェースで BGP unnumbered を使って BGP セッションが確立します。ピアの IPv6 リンクローカルアドレスは自動的に検出され、IPv4 ルートは拡張 next-hop 機能を使って交換されます。
+
+  ドキュメント <!-- Documentation -->: https://linuxcontainers.org/incus/docs/main/howto/network_bgp/
+
+  ## ネストした仮想化の制御 <!-- Control of nested virtualization -->
+  <!--
+  The `security.nesting` instance configuration key now also applies to virtual machines.
+  -->
+  `security.nesting` インスタンス設定キーは、仮想マシンにも適用されるようになりました。
+
+  <!--
+  Unlike containers, this defaults to `true` to retain our previous default behavior.
+  When set to `false`, the `svm` and `vmx` CPU flags will get disabled for the guest VM.
+  -->
+  コンテナとは異なり、これはデフォルトで `true` で、従来のデフォルトの動作が維持されます。`false` に設定すると、ゲスト VM では `svm` と `vmx` CPU フラグが無効化されます。
+
+  <!--
+  A matching `restricted.virtual-machines.nesting` project configuration key was also added. When set to `block`, all virtual machines in the project must have `security.nesting` set to `false`.
+  -->
+  対応するプロジェクト構成キーである `restricted.virtual-machines.nesting` も追加されました。`block` に設定した場合、プロジェクト内のすべての仮想マシンの `security.nesting` は `false` に設定されている必要があります。
+
+  ドキュメント<!-- Documentation -->: https://linuxcontainers.org/incus/docs/main/reference/projects/
+
+  ## すべてのリモートを対象としたインスタンスの一覧表示 <!-- Listing instances across all remotes -->
+  <!--
+  The `incus list` command gained an `--all-remotes` flag, showing the instances from all configured remotes in a single view with an extra remote column.
+  -->
+  `incus list` コマンドに `--all-remotes` フラグが追加されました。これにより、設定済みのすべてのリモートにあるインスタンスが、リモートを示すカラムを追加した状態で、単一のビューで表示されるようになりました。
+
+      stgraber@vorash:~$ incus list --all-remotes --all-projects
+      +------------+---------+-------------+---------+-------------------------+--------------------------------------------------+-----------------+-----------+----------+
+      |   REMOTE   | PROJECT |    NAME     |  STATE  |          IPV4           |                       IPV6                       |      TYPE       | SNAPSHOTS | LOCATION |
+      +------------+---------+-------------+---------+-------------------------+--------------------------------------------------+-----------------+-----------+----------+
+      | local      | default | c1          | RUNNING | 10.80.1.4 (eth0)        | fd42:8b9f:58e4:b6ac:1266:6aff:fe2d:7101 (eth0)   | CONTAINER       | 0         | none     |
+      +------------+---------+-------------+---------+-------------------------+--------------------------------------------------+-----------------+-----------+----------+
+      | local      | default | incus-os    | STOPPED |                         |                                                  | VIRTUAL-MACHINE | 0         | none     |
+      +------------+---------+-------------+---------+-------------------------+--------------------------------------------------+-----------------+-----------+----------+
+      | local      | default | my-nginx    | STOPPED |                         |                                                  | CONTAINER (APP) | 0         | none     |
+      +------------+---------+-------------+---------+-------------------------+--------------------------------------------------+-----------------+-----------+----------+
+      | local      | default | v1          | STOPPED |                         |                                                  | VIRTUAL-MACHINE | 0         | none     |
+      +------------+---------+-------------+---------+-------------------------+--------------------------------------------------+-----------------+-----------+----------+
+      | s-castiana | default | caddy-test  | STOPPED |                         |                                                  | CONTAINER (APP) | 0         | none     |
+      +------------+---------+-------------+---------+-------------------------+--------------------------------------------------+-----------------+-----------+----------+
+      | s-castiana | default | dev-os      | STOPPED |                         |                                                  | VIRTUAL-MACHINE | 1         | none     |
+      +------------+---------+-------------+---------+-------------------------+--------------------------------------------------+-----------------+-----------+----------+
+      | s-castiana | default | isolated-oc | STOPPED |                         |                                                  | VIRTUAL-MACHINE | 0         | none     |
+      +------------+---------+-------------+---------+-------------------------+--------------------------------------------------+-----------------+-----------+----------+
+      | s-castiana | default | rhel10      | RUNNING | 10.10.10.225 (eth0)     | 2602:fc62:ef:1010:1266:6aff:fe69:dd25 (eth0)     | CONTAINER (APP) | 0         | none     |
+      +------------+---------+-------------+---------+-------------------------+--------------------------------------------------+-----------------+-----------+----------+
+      | s-castiana | default | test        | RUNNING | 10.226.131.1 (incusbr0) | fd42:10b9:5a70:b459::1 (incusbr0)                | VIRTUAL-MACHINE | 0         | none     |
+      |            |         |             |         | 10.10.10.73 (_venp5s0)  | 2602:fc62:ef:1010:1266:6aff:fe11:9cfd (_venp5s0) |                 |           |          |
+      +------------+---------+-------------+---------+-------------------------+--------------------------------------------------+-----------------+-----------+----------+
+      | s-castiana | default | v1          | RUNNING | 10.10.10.80 (enp5s0)    | 2602:fc62:ef:1010:1266:6aff:fe49:20ca (enp5s0)   | VIRTUAL-MACHINE | 0         | none     |
+      +------------+---------+-------------+---------+-------------------------+--------------------------------------------------+-----------------+-----------+----------+
+      | s-dakara   | default | c1          | STOPPED |                         |                                                  | CONTAINER       | 0         | none     |
+      +------------+---------+-------------+---------+-------------------------+--------------------------------------------------+-----------------+-----------+----------+
+      | s-dakara   | default | dev-os      | STOPPED |                         |                                                  | VIRTUAL-MACHINE | 0         | none     |
+      +------------+---------+-------------+---------+-------------------------+--------------------------------------------------+-----------------+-----------+----------+
+      | s-dakara   | default | v1          | RUNNING | 172.17.250.222 (enp5s0) | 2602:fc62:c:250:1266:6aff:feb0:6588 (enp5s0)     | VIRTUAL-MACHINE | 0         | none     |
+      +------------+---------+-------------+---------+-------------------------+--------------------------------------------------+-----------------+-----------+----------+
+      | s-dakara   | default | win2003     | STOPPED |                         |                                                  | VIRTUAL-MACHINE | 0         | none     |
+      +------------+---------+-------------+---------+-------------------------+--------------------------------------------------+-----------------+-----------+----------+
+      | s-dakara   | default | win2025     | STOPPED |                         |                                                  | VIRTUAL-MACHINE | 0         | none     |
+      +------------+---------+-------------+---------+-------------------------+--------------------------------------------------+-----------------+-----------+----------+
+
+  ## VM エージェント処理の改良 <!-- Improved VM agent handling -->
+  <!--
+  The VM agent can now run in environments that lack `virtio-vsock` by instead reporting OS data through a serial link. This allows at least correct reporting of IP configuration and OS in environments that historically couldn't run the agent at all.
+  -->
+  VM エージェントが、`virtio-vsock` が利用できない環境でも、代わりにシリアルリンク経由で OS 情報を報告することにより実行できるようになりました。これにより、従来はエージェントを全く実行できなかった環境でも、IP 設定や OS 情報を正しく報告できるようになります。
+
+  ## ネットワーク割り当ての改良 <!-- Network allocations improvements -->
+  <!--
+  The network allocations API now includes the network that each allocation belongs to.
+  -->
+  ネットワーク割り当て API に、各割り当てが属するネットワーク情報が含まれるようになりました。
+
+  <!--
+  On the CLI side, `incus network list-allocations` shows the new network column and gained a `--summary` flag for a more compact view.
+  -->
+  CLI 側では、`incus network list-allocations` コマンドに新たにネットワーク列が表示されるようになり、よりコンパクトに表示するための `--summary` フラグが導入されました。
+
+      stgraber@vorash:~$ incus network list-allocations
+      +-------------------------+---------------------------------------------+----------+----------+-----+-------------------+
+      |         USED BY         |                   ADDRESS                   | NETWORK  |   TYPE   | NAT |    MAC ADDRESS    |
+      +-------------------------+---------------------------------------------+----------+----------+-----+-------------------+
+      | /1.0/instances/c1       | 10.80.1.4/32                                | incusbr0 | instance | YES | 10:66:6a:2d:71:01 |
+      +-------------------------+---------------------------------------------+----------+----------+-----+-------------------+
+      | /1.0/instances/c1       | fd42:8b9f:58e4:b6ac:1266:6aff:fe2d:7101/128 | incusbr0 | instance | YES | 10:66:6a:2d:71:01 |
+      +-------------------------+---------------------------------------------+----------+----------+-----+-------------------+
+      | /1.0/instances/incus-os | fd42:8b9f:58e4:b6ac:1266:6aff:fef3:2d9/128  | incusbr0 | instance | YES | 10:66:6a:f3:02:d9 |
+      +-------------------------+---------------------------------------------+----------+----------+-----+-------------------+
+      | /1.0/instances/my-nginx | fd42:8b9f:58e4:b6ac:1266:6aff:fe61:8058/128 | incusbr0 | instance | YES | 10:66:6a:61:80:58 |
+      +-------------------------+---------------------------------------------+----------+----------+-----+-------------------+
+      | /1.0/instances/v1       | fd42:8b9f:58e4:b6ac:1266:6aff:fe3f:71f2/128 | incusbr0 | instance | YES | 10:66:6a:3f:71:f2 |
+      +-------------------------+---------------------------------------------+----------+----------+-----+-------------------+
+      | /1.0/networks/incusbr0  | 10.80.1.1/24                                | incusbr0 | network  | YES |                   |
+      +-------------------------+---------------------------------------------+----------+----------+-----+-------------------+
+      | /1.0/networks/incusbr0  | fd42:8b9f:58e4:b6ac::1/64                   | incusbr0 | network  | YES |                   |
+      +-------------------------+---------------------------------------------+----------+----------+-----+-------------------+
+      stgraber@vorash:~$ incus network list-allocations --summary
+      +----------+--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+      | NETWORK  |          SUBNET          |                                                                               USED                                                                                |
+      +----------+--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+      | incusbr0 | 10.80.1.0/24             | 10.80.1.4                                                                                                                                                         |
+      +----------+--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+      | incusbr0 | fd42:8b9f:58e4:b6ac::/64 | fd42:8b9f:58e4:b6ac:1266:6aff:fe2d:7101, fd42:8b9f:58e4:b6ac:1266:6aff:fe3f:71f2, fd42:8b9f:58e4:b6ac:1266:6aff:fe61:8058, fd42:8b9f:58e4:b6ac:1266:6aff:fef3:2d9 |
+      +----------+--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+  ## I/O 制限の改良 <!-- I/O limits improvements -->
+  <!--
+  `unix-block` devices now support the `limits.read` and `limits.write` configuration keys, behaving like their `disk` device equivalents and accepting either a byte/s value or an IOPS value.
+  -->
+  `unix-block` デバイスは、`limits.read` と `limits.write` 設定キーをサポートするようになりました。これにより、`disk` デバイスと同様に動作し、バイト/秒または IOPS 値を指定できるようになりました。
+
+  <!--
+  Additionally, it's now possible to set both a byte/s limit and an IOPS limit at the same time on `disk` and `unix-block` devices by using a comma separated list of values:
+  -->
+  さらに、カンマ区切りの値のリストを使うことで、`disk` と `unix-block` デバイスに対してバイト/秒の制限と IOPS の制限を同時に設定できるようになりました:
+
+      incus config device set my-vm data limits.read=30MiB,1000iops
+
+  ドキュメント <!-- Documentation -->: https://linuxcontainers.org/incus/docs/main/reference/devices_unix_block/
+
+  ## ストレージプールメトリクス <!-- Storage pool metrics -->
+  <!--
+  The `/1.0/metrics` endpoint now includes storage pool usage data:
+  -->
+  `/1.0/metrics` エンドポイントに、ストレージプールの使用状況データが含まれるようになりました:
+
+  - `incus_storage_pool_size_bytes{pool="<pool>",driver="<driver>"}`
+  - `incus_storage_pool_used_bytes{pool="<pool>",driver="<driver>"}`
+
+  ドキュメント <!-- Documentation -->: https://linuxcontainers.org/incus/docs/main/metrics/
+
+  ## ACME EAB（Extended Account Binding） <!-- ACME External Account Binding -->
+  <!--
+  The ACME integration now supports External Account Binding (EAB) through two new server configuration keys, `acme.eab.kid` and `acme.eab.hmac`.
+  -->
+  ACME 統合機能は、EAB（Extended Account Binding）をサポートするようになりました。これは `acme.eab.kid` と `acme.eab.hmac` という 2 つの新しいサーバー設定キーを通して設定します。
+
+  <!--
+  This allows using ACME providers which require pre-established account credentials.
+  -->
+  これにより、事前にアカウント認証情報が必要な ACME プロバイダーを利用できるようになりました。
+
+  ドキュメント <!-- Documentation -->: https://linuxcontainers.org/incus/docs/main/authentication/
+
+  ## リソース API における CPU クラスターのレポート <!-- CPU cluster reporting in the resources API -->
+  <!--
+  The resources API now reports a `cluster` field for each CPU core.
+  This is useful in ARM big.LITTLE environments where core identifiers aren't unique per socket but instead per cluster of cores.
+  -->
+  リソース API は、各 CPU コアに対して `cluster` フィールドをレポートするようになりました。これは、コア識別子がソケットごとに一意ではなく、コアのクラスターごとに一意である ARM big.LITTLE 環境で役に立ちます。
+
+  <!--
+  This is visible in `incus info --resources` and is also used to make the VM CPU topology validation cluster-aware.
+  -->
+  これは、`incus info --resources` で表示され、VM の CPU トポロジー検証をクラスター対応にするためにも使用されます。
+
+  ## ネイティブな Windows と macOS のインストーラー <!-- Native Windows and macOS installers -->
+  <!--
+  Incus releases now come with native installers for the client tool, an MSI package for Windows and a PKG for macOS, built and published as part of the release process.
+  -->
+  Incus は、クライアントツール用のネイティブなインストーラー、Windows は MSI パッケージ、macOS は PKG でリリースされるようになりました。これらはリリースプロセスの一環としてビルドされ、公開されます。
+
+  <!--
+  Worth noting that at this time neither of those are signed, so installation may be challenging.
+  -->
+  現時点では、これらのどちらにも署名がないため、インストールがチャレンジングになる可能性があります。
+
+  # すべての変更点 <!-- Complete changelog -->
+
+  <!--
+  Here is a complete list of all changes in this release:
+  -->
+  このリリースのすべての変更のリストは次の通りです（翻訳なし）:
+
+  [details="すべてのChangeLogを見る"]
+   - cmd/incusd: `isolated` on `restricted.containers.privilege` prevents setting `security.privileged` to `true`
+   - doc: regenerate configurable options index
+   - api: regenerate `/1.0/metadata/configuration` options
+   - incus/move: Apply --storage pool to dependent disks
+   - github: Build Windows and MacOS native installers.
+   - doc: fix `config set` deprectation warning
+   - Translated using Weblate (Japanese)
+   - incusd/firewall: Fix double Wait in nftParseRuleset
+   - incusd/device: Allow static CIDR address on unmanaged bridge
+   - incusd/instance/qemu/qmp: Run guest memory dump detached
+   - incusd/instance/qemu/qmp: Add per-command timeout
+   - github: Add a build workflow
+   - build(deps): bump actions/download-artifact from 4 to 8
+   - build(deps): bump actions/upload-artifact from 4 to 7
+   - shared/logger: Add WarnOnErrorExcept helper
+   - incus: Avoid double-close warning on volume/bucket/instance import
+   - incusd/device: Reset VM disk I/O limits on unset
+   - incusd/devices: Allow /32 and /128 for OCI addresses
+   - incusd/operations: Fix nil deref race in Cancel
+   - cmd/generate-database/db: Manually specify uuid package
+   - Translated using Weblate (Japanese)
+   - Translated using Weblate (Japanese)
+   - Translated using Weblate (Japanese)
+   - incusd/instance/qemu/qmp: Bump timeout for block commands
+   - incusd/instance/qemu/qmp: Bump timeout for slow synchronous commands
+   - incus/server/storage/driver/ceph: Wait, if image is already in the unpacking stage on another cluster member.
+   - incus: Avoid double-close warning on export and file pull
+   - doc/incus-cli: reword docs for configuration file path
+   - incusd/device/disk: Use resolved project for Ceph ISO RBD names
+   - incusd: Switch OCI network configuration to interfaces.json
+   - incusd/device: Mention "none" as valid NIC gateway value
+   - incusd: Support "none" gateways in OCI containers
+   - doc: Update configuration option metadata
+   - cmd/incus-agent: Implement Windows osLoadModules to check viosock service
+   - cmd/incus-agent: Only start agent http server if osLoadModules succeeds
+   - cmd/incus-agent: Write state data to ringbuffer if no http server present
+   - internal/server/instance/drivers/qmp: Bump ringbuffer size to 16K
+   - internal/server/instance/drivers/qmp: Record instance state retrieved from ringbuffer
+   - internal/server/instance/drivers: Treat degraded agent as offline, except when fetching state
+   - incusd/instance/qmp: Bump some more timeouts
+   - incusd: Use constant-time comparison for secrets
+   - incusd: Limit websocket control message size
+   - incusd/device: Use IsAPIName for device name validation
+   - incusd/storage/s3: Pin certificate for local S3 bucket transfers
+   - incusd/db/query: Use hex blob literal in database dumps
+   - incusd/instance/qemu: Use a shared memory backend on all architectures
+   - incusd/storage: Honor btrfs.compression on instances from optimized images
+   - test: Cover btrfs.compression on instances from optimized images
+   - incusd/storage/s3: Add GetBucketVersioning
+   - incus/server/storage/driver/backend: Wait, if image is already in the unpacking stage on another cluster member.
+   - incus/server/storage/driver/cephfs: Implement stub for IsImageCloneSourceReady function
+   - incus/server/storage/driver/common: Implement stub for IsImageCloneSourceReady function
+   - incus/server/storage/driver/linstor: Implement stub for IsImageCloneSourceReady function
+   - incus/server/storage/driver/lvm: Implement stub for IsImageCloneSourceReady function
+   - incus/server/storage/driver/truenas: Implement stub for IsImageCloneSourceReady function
+   - incusd/network/ovn: Add Enabled option to OVNSwitchPortOpts
+   - incusd/network/ovn: Add UpdateLogicalSwitchPortEnabled
+   - incusd/network/ovn: Add GetLogicalSwitchActivePorts
+   - incusd/network/ovn: Make SetLogicalSwitchQoSRules replace existing rules
+   - incusd/network/ovn: Extract instanceDevicePortOpts
+   - incusd/network/ovn: Only consider enabled switch ports as active
+   - incusd/network/ovn: Tweak instance port startup logic
+   - incusd/network/ovn: Keep instance ports until device removal
+   - incusd/network/ovn: Create instance ports on device add
+   - incusd/forknet: Wait up to 5s for initial DHCP configuration
+   - api: network_bgp_peer_interface
+   - incusd/bgp: Add support for unnumbered peers
+   - incusd/network: Add bgp.peers.NAME.interface
+   - doc: Update config
+   - doc/network/bgp: Document BGP unnumbered
+   - incusd/instance/qemu: Handle missing kvm64
+   - client: Only pass device overrides to sources supporting them
+   - incusd/instance/qemu: Serialize CPU pinning data in the CPU topology
+   - incusd/instance/qemu: Re-compute CPU pins on stateful start
+   - incusd/network/ovn: Fix NAT for network forward default targets
+   - incsd/device/config: Add DataFilePath field to MountEntryItem
+   - incusd/instance/drivers: Add support for raw-format block devices
+   - Translated using Weblate (Japanese)
+   - Translated using Weblate (Russian)
+   - Translated using Weblate (Swedish)
+   - incusd/instance: Allow security.nesting on VMs
+   - incusd/instance/qemu: Turn off svm and vmx when security.nesting is disabled
+   - api: projects_restricted_virtual_machines_nesting
+   - incusd/project: Add restricted.virtual-machines.nesting
+   - doc: Update config
+   - incus: Fix remote path handling on Windows
+   - incusd/forksyscall: Fix mknod emulation for relative paths
+   - internal/instance: Mention cgroup2 limitations
+   - doc: Update config
+   - incusd/auth: Move OpenFGA config to authorization.* namespace
+   - doc/authorization: Update for authorization config namespace
+   - doc: Update config
+   - api: authorization_config
+   - tests: Update OpenFGA tests for authorization config keys
+   - incusd/dev_incus: Fix race in ConnPidMapper access
+   - incusd/forksyscall: Check for path truncation in mknod emulation
+   - api: network_allocations_network extension
+   - shared/api: add Network field to NetworkAllocations
+   - incusd/network-allocations: populate network field
+   - doc/rest-api: Refresh swagger YAML
+   - incus/network: add --summary flag to list-allocations
+   - i18n: Update translation templates
+   - incusd/storage/ceph: Tolerate concurrently deleted RBD entities in zombie cleanup
+   - incusd/storage/ceph: Serialize volume deletion on the parent image
+   - incusd/storage/ceph: Tolerate concurrent-deletion handling for non-image parents and renames
+   - api: Add gpu_native_context extension
+   - incusd/device: Add native-context GPU device type
+   - incusd/instance/drivers: Support native-context GPU in QEMU
+   - incusd: Fix race between forkfile cleanup and respawn
+   - incusd/events: Don't warn on double connection close
+   - Translated using Weblate (Portuguese)
+   - incusd/apparmor: Fix alignment
+   - incusd/apparmor: Allow DRM render nodes for native-context GPU
+   - doc: Document the native-context GPU type
+   - doc: Update config
+   - incusd/linux: Add GrantPosixACLUser
+   - incusd/device: Grant render node access to native-context GPUs
+   - incusd/network/bridge: Don't NAT traffic between managed bridge networks
+   - incusd/storage/zfs: Clear volume quota during optimized refresh
+   - incusd/metrics: Add storage pool usage metric types
+   - incusd/metrics: Collect storage pool usage
+   - doc: Document storage pool metrics
+   - incusd/storage/zfs: Restore volume quota on refresh error
+   - api: Add instance_port_forward extension
+   - shared/api: Add InstancePortForwardPost
+   - client: Add GetInstancePortForwardConn
+   - incus-agent: Add port-forward API
+   - incusd/forknet: Add connect command
+   - incusd/instance: Add PortForwardConn
+   - incusd/auth: Add can_connect_tcp
+   - incusd/instances: Add port-forward API
+   - incus: Add port-forward command
+   - tests: Add port forward tests
+   - doc/rest-api: Refresh swagger YAML
+   - i18n: Update translation templates
+   - Translated using Weblate (Spanish)
+   - Translated using Weblate (Spanish)
+   - Translated using Weblate (Spanish)
+   - Translated using Weblate (Portuguese)
+   - Translated using Weblate (Portuguese)
+   - Translated using Weblate (Portuguese)
+   - Translated using Weblate (Tamil)
+   - Translated using Weblate (Dutch)
+   - Translated using Weblate (Dutch)
+   - Translated using Weblate (Norwegian Bokmål)
+   - Translated using Weblate (Norwegian Bokmål)
+   - Translated using Weblate (Greek)
+   - Translated using Weblate (Italian)
+   - Translated using Weblate (Italian)
+   - Translated using Weblate (Russian)
+   - Translated using Weblate (Russian)
+   - Translated using Weblate (German)
+   - Translated using Weblate (German)
+   - Translated using Weblate (German)
+   - Translated using Weblate (German)
+   - Translated using Weblate (German)
+   - Translated using Weblate (Portuguese (Brazil))
+   - Translated using Weblate (Portuguese (Brazil))
+   - Translated using Weblate (Portuguese (Brazil))
+   - Translated using Weblate (Chinese (Traditional Han script))
+   - Translated using Weblate (Chinese (Traditional Han script))
+   - Translated using Weblate (French)
+   - Translated using Weblate (French)
+   - Translated using Weblate (French)
+   - Translated using Weblate (French)
+   - Translated using Weblate (French)
+   - Translated using Weblate (French)
+   - Translated using Weblate (French)
+   - Translated using Weblate (French)
+   - Translated using Weblate (French)
+   - Translated using Weblate (Georgian)
+   - Translated using Weblate (Georgian)
+   - Translated using Weblate (Chinese (Simplified Han script))
+   - Translated using Weblate (Chinese (Simplified Han script))
+   - Translated using Weblate (Chinese (Simplified Han script))
+   - Translated using Weblate (Chinese (Simplified Han script))
+   - Translated using Weblate (Chinese (Simplified Han script))
+   - Translated using Weblate (Chinese (Simplified Han script))
+   - Translated using Weblate (Chinese (Simplified Han script))
+   - Translated using Weblate (Chinese (Simplified Han script))
+   - Translated using Weblate (Indonesian)
+   - Translated using Weblate (Indonesian)
+   - Translated using Weblate (Indonesian)
+   - Translated using Weblate (Japanese)
+   - Translated using Weblate (Japanese)
+   - Translated using Weblate (Japanese)
+   - Translated using Weblate (Japanese)
+   - Translated using Weblate (Swedish)
+   - Translated using Weblate (Swedish)
+   - Translated using Weblate (Swedish)
+   - Translated using Weblate (Japanese)
+   - incusd/metrics: Rename incus_storage_pool_total_bytes to incus_storage_pool_size_bytes
+   - Translated using Weblate (Japanese)
+   - incusd/seccomp: Handle syscalls from non-leader threads
+   - incusd/instance/lxc: Stop the DHCP client from the stop hook
+   - shared/tls: Use first successful connection in RFC3493Dialer
+   - incusd/instances/common: Fix typo
+   - incusd/device: Handle CIDR values in NIC ipv4.address/ipv6.address
+   - incusd/network: Handle CIDR values in NIC ipv4.address/ipv6.address
+   - client: Only retry TLS dial on certificate verification errors
+   - incusd/network/ovn: Tolerate stop failures during network deletion
+   - incusd/device/nic_ovn: Guard cleanup against unavailable network
+   - incusd/networks: Run driver deletion for locally pending networks
+   - incusd: Honor target parameter in bitmap endpoints
+   - incusd/cluster: Resolve instance volumes by name in ConnectIfVolumeIsRemote
+   - incus/console: Escape spaces in SPICE console socket URI
+   - incus: Don't persist INCUS_REMOTE as the default remote
+   - incusd/storage/s3: Support conditional writes
+   - incusd/instance/qmp: Rework block job monitoring
+   - incusd/instance/qemu: Harden ephemeral snapshot teardown
+   - incusd/instance/qmp: Remove unused event channel logic
+   - client: Always set TLS ServerName on dial
+   - incusd/storage/btrfs: Restrict subvolume sources under the daemon dir
+   - incusd: Don't warn on double close of downloaded image files
+   - incus/cluster_group: Change group separator in assign subcommand
+   - incus/profile: Change profile separator in assign subcommand
+   - test: Fix assign separator
+   - i18n: Update translation templates
+   - incus/file: Fix progress reporting on stdin push
+   - incus/import: Fix progress reporting on stdin import
+   - incus/storage_bucket: Fix progress reporting on stdin import
+   - incus/storage_volume: Fix progress reporting on stdin import
+   - incus/storage_volume_file: Fix progress reporting on stdin push
+   - incusd/network/zone: Return a single SOA record on plain SOA queries
+   - incusd/storage: Fix races in connectOfflineNBD
+   - incusd/locking: Make unlock functions release only their own lock
+   - incusd/storage: Hold NBD operation lock for the whole session
+   - Translated using Weblate (Portuguese)
+   - build(deps): bump actions/setup-go from 6 to 7
+   - incusd/network/ovn: Detect stale database connections
+   - incusd/network/ovn: Remove NB client singleton
+   - incusd/storage: Use qcow2 virtual size as instance block size
+   - incusd/storage: Skip root disk size check on remote cluster move
+   - incusd/device: Make disk I/O limit parsing reusable
+   - api: Add unix_block_limits extension
+   - incusd/device: Add I/O limits for unix-block devices
+   - doc: Update config
+   - incusd/auth: Add allow/deny authorizers
+   - incusd/request: Add CtxUnixIsRoot
+   - incusd: Add support for multiple authorizers
+   - incusd: Set defaults for authorization.client.* keys
+   - tests: Add authorization router tests
+   - tests: Set authorization.client.* keys
+   - doc/authorization: Update for authorization client routing
+   - doc: Update config
+   - api: authorization_client_routing
+   - Translated using Weblate (Georgian)
+   - incusd/device: Require CIDR address when NIC gateway is set
+   - incusd/storage: Honor writable flag on offline NBD exports
+   - incusd/seccomp: Use namespace credentials for FUSE mounts
+   - incusd/dev_incus: Detect LXC monitors from cgroup v2
+   - incus: Rename debug subcommand to low-level and advertise it
+   - api: instance_nvram
+   - shared/api: Add InstanceNVRAMVariable struct
+   - shared/uefi: Add OVMF parsing primitives
+   - shared/uefi: Add various variable dissectors
+   - incusd/instance: Add GetNVRAM
+   - client: Add NVRAM getters
+   - incusd/instances: Add NVRAM API
+   - doc/rest-api: Refresh swagger YAML
+   - incus/low-level: Add nvram subcommand
+   - incusd/instance/qemu: Initialize NVRAM on first query
+   - golangci: Ignore GUID names and comments
+   - i18n: Update translation templates
+   - shared/uefi: Add some OVMF dumping primitives
+   - incusd/instance: Add SetNVRAM
+   - client: Add NVRAM variable deletion
+   - incusd/instances: Add NVRAM variable deletion
+   - doc/rest-api: Refresh swagger YAML
+   - incus/low-level: Add nvram unset subcommand
+   - i18n: Update translation templates
+   - api: Add disk_io_limits_combined extension
+   - incusd/device: Allow combining byte/s and IOPS limits
+   - doc/storage_volumes: Mention combined I/O limits
+   - doc: Update config
+   - Add storage note about loop devices on COW fs
+   - incusd/instance/lxc: Use project-qualified CRIU restore name
+   - incusd/instance/lxc: Clean devices after failed CRIU restore
+   - Translated using Weblate (Portuguese)
+   - incusd/storage: Fix instance copy for non-block volumes
+   - shared/ask: fix password prompt loop on Windows
+   - incusd/storage: Add support for '--refresh' for instances with dependent disks
+   - shared/ask: Fix newlines after functional blocks
+   - incusd/storage/drivers: Don't set received UUID on main btrfs volume
+   - incusd: Add cpus= argument to forkqemu
+   - incusd/instance/qemu: Confine QEMU startup to a single CPU type
+   - api: resources_cpu_cluster
+   - shared/api: Add Cluster to ResourcesCPUCore
+   - shared/resources: Fix CPU core grouping to handle core clusters
+   - incusd/instance/qemu: Make CPU topology validation cluster-aware
+   - incus/info: Show the CPU cluster of each core
+   - i18n: Update translation templates
+   - doc/rest-api: Refresh swagger YAML
+   - shared/ask: Fix static analysis
+   - incusd/instance/lxc: Fix OCI entrypoint escaping
+   - incusd/seccomp: Report FUSE mount helper failures
+   - incusd/storage/drivers: Fix volume activation of filesystem snapshots
+   - incusd/instance/qemu: Resize metadata image on disk size change
+   - incusd: Drop metadata image on instance copy and import
+   - incusd/storage: Strip unsafe symlinks in externally-supplied instance data
+   - incusd/storage/s3: Reject symlinks in bucket backups
+   - incusd/instance/qemu: Fix publish of qcow2-backed volumes
+   - incusd/auth: Fill missing local bucket location
+   - doc: Ignore bugzilla.opensuse.org in linkcheck
+   - Translated using Weblate (Portuguese)
+   - incusd/storage: Allow expected symlinks in instance metadata
+   - incusd/instance/qmp: Bump blockdev-add/del timeouts
+   - internal/filter: Prefer exact key match in ValueOf
+   - internal/filter: Only allow abbreviating the namespace in DotPrefixMatch
+   - internal/filter: Workaround spellcheck
+   - incus/network/allocations: Add a network column
+   - i18n: Update translation templates
+   - Translated using Weblate (Portuguese)
+   - incusd/cluster: Allow certificate updates with offline members on same-key renewals
+   - incusd/daemon: Sync cluster certificate from leader on startup
+   - incusd: Keep cluster listener when core.https_address changes
+   - incusd/firewall/nftables: Use a bridges set for cross-bridge NAT exclusions
+   - incusd/network/bridge: Drop the cross-bridge NAT rules refresh
+   - incusd/firewall: Remove unused SNATOpts.ExcludeInterfaces
+   - build(deps): bump KineticCafe/actions-dco from 3.1.0 to 3.2.0
+   - build(deps): bump actions/labeler from 6 to 7
+   - incusd/cgroup: Add swap accounting detection
+   - incusd/seccomp: Skip swap in sysinfo when swap accounting is unavailable
+   - incusd/instance/lxc: Handle missing swap accounting
+   - api: acme_eab
+   - shared/tls: Add EAB support to RunACMEChallenge
+   - incusd/cluster/config: Add acme.eab.kid and acme.eab.hmac
+   - incusd/acme: Pass EAB configuration to lego
+   - doc/authentication: Mention External Account Binding
+   - doc: Update config
+   - doc: Add EAB and HMAC to wordlist
+   - incusd/instance: Prevent root disk re-creation on running instances
+   - incusd/instance/qemu: Prevent root disk hot-unplug
+   - Translated using Weblate (Russian)
+   - Translated using Weblate (Swedish)
+   - incusd/instance-types: Use clouds.yaml for the list of clouds
+   - incusd/instance-types: Add support for root disk size
+   - incusd: Document HTTP 201 return code in Swagger specs
+   - incusd: Fix incorrect return codes in Swagger specs
+   - incusd/network_integrations: Return 201 with Location on rename
+   - incusd: Document HTTP 412 on instance and snapshot PUT/PATCH
+   - incusd/response: Add Conflict swagger response definition
+   - incusd: Document baseline error codes for endpoints using SmartError
+   - doc/rest-api: Refresh swagger YAML
+   - incusd/storage: Strip sub-path from dependent volume sources
+   - incusd/migration: Strip sub-path from dependent volume source overrides
+   - incusd/instance: Strip sub-path from dependent volume sources
+   - incusd: Strip sub-path from dependent volume sources
+   - incusd/storage: Allow unattached volumes in qcow2 migration
+   - incusd/instance/qmp: Add copy-before-write export helpers
+   - incusd/instance/qemu: Use copy-before-write overlays for NBD exports
+   - incusd/main_forkfile: Set SFTP max packet size to 128KiB
+   - incus-agent: Set SFTP max packet size to 128KiB
+   - internal/linux: detect initial user namespace by inode
+   - incus/launch: Link to the supported instance types
+   - doc/howto/instances_create: Update instance types link
+   - i18n: Update translation templates
+   - incusd/storage/ceph: Bound RBD unmap with a 30s timeout
+   - shared/archive: Add CompressionThreads
+   - incusd/images: Support reproducible pigz output
+   - shared/archive: Prefer pigz for decompression when available
+   - incusd/images: Prefer pigz for compression when available
+   - Update gomod
+   - client/oci: Use pgzip for image compression
+   - tests: Update godeps
+   - incusd/qemu: Use pgzip for state compression
+   - incus/list: Add --all-remotes
+   - tests: Add --all-remotes test
+   - i18n: Update translation templates
+   - client: Add ETag on NVRAM variable getter
+   - incusd/instances: Add ETag on NVRAM variable getter
+   - client: Add NVRAM variable update
+   - incusd/instances: Diverse fixes
+   - shared/api: Add InstanceNVRAMVariablePut struct
+   - shared/uefi: Add some OVMF formatting primitives
+   - incusd/instances: Add NVRAM variable update
+   - doc/rest-api: Refresh swagger YAML
+   - incus: Modify argument order in flag helpers
+   - incus/usage: Add MakeKV
+   - incus/usage: Add AsSingleton
+   - incus/low-level: Add nvram set subcommand
+   - incus/low-level: Add nvram edit subcommand
+   - api: instance_nvram (updated)
+   - i18n: Update translation templates
+   - incusd/firewall/nftables: Fix template race in applyNftConfig
+   - incusd: Fix repair endpoint swagger method
+   - client: Add RepairInstance
+   - incus/low-level: Add bitmaps subcommand
+   - incus/low-level: Add repair subcommand
+   - client: Add GetStorageVolumeBitmap
+   - incus/storage_volume: Add bitmap subcommand
+   - i18n: Update translation templates
+   - incusd/instance/qemu: Release operation lock on snapshot size failure
+   - incusd/operations: Remove operation from map on DB registration failure
+   - incusd: Fix goroutine leak when cluster instance list times out
+   - generate-database: Add ReferenceID filtering for reference tables
+   - incusd/db: Add ReferenceID filtering to Config and Device
+   - incusd/db/cluster: Update generated code
+   - incusd/db/cluster: Add referenced profile query helpers
+   - incusd/db: Only load referenced profiles when filling instances
+   - incusd/db/cluster: Scope profile queries in Instance.ToAPI
+   - incusd: Only load referenced profile data
+   - incusd/backup: Only load referenced profile data
+   - incusd/project: Scope config queries to project resources
+   - incusd/scriptlet: Scope instance device query
+   - incusd/db: Port instance config and device fill to generated queries
+   - incusd/instances: Add NVRAM rebuild as a repair action
+   - incusd/instance: Add ResetNVRAM
+   - api: instance_nvram (updated)
+   - incus/low-level: Add rebuild-nvram to the list of repair actions
+   - i18n: Update translation templates
+   - incusd/instances: Fix capitalization
+   - incusd/project: Restrict volume creation options in restricted projects
+   - internal/instance: Prevent line breaks in NVIDIA config values
+   - incusd/instance: Confine OCI network writes to instance root
+   - incusd/storage: Confine backup.yaml write to instance root
+   - incusd/instance: Confine metadata.yaml access to instance root
+   - incusd/instance/qemu: Confine template access to instance root
+   - incusd/images: Validate image fingerprint for all protocols
+   - incusd/storage: Validate volume name on ISO and backup import
+   - incusd/instances: Validate instance name on backup import
+   - incusd/instances: Re-check restrictions after copy config merge
+   - incusd/instance: Enforce project restrictions on migration overrides
+   - incusd/project: Enforce isolated restriction when idmap key omitted
+   - incusd: Expand network address set project for authorization
+   - incusd/instance: Fix NVIDIA require.cuda and require.driver handling
+   - incusd/instance: Confine exec-output access to its directory
+   - incusd: Fail closed on unknown authorization project expansion
+   - incusd/instance/qemu: Use os.Root for template output
+   - client: Make GetRawInstanceNVRAMGUIDVar return attributes
+   - incusd/response: Allow custom headers in devIncusResponse
+   - shared/uefi: Export dumpAttributes
+   - incusd/instances: Add headers to raw NVRAM variable response
+   - incus/low-level: Support more formats in NVRAM getter and setter
+   - i18n: Update translation templates
+   - Makefile: Bump to 1.25.12
+   - Update gomod
+   - Translated using Weblate (Georgian)
+   - Translated using Weblate (Georgian)
+   - Translated using Weblate (Chinese (Traditional Han script))
+   - Translated using Weblate (Chinese (Traditional Han script))
+   - Translated using Weblate (Spanish)
+   - Translated using Weblate (Spanish)
+   - Translated using Weblate (Spanish)
+   - Translated using Weblate (Portuguese (Brazil))
+   - Translated using Weblate (Portuguese (Brazil))
+   - Translated using Weblate (Portuguese (Brazil))
+   - Translated using Weblate (Russian)
+   - Translated using Weblate (Russian)
+   - Translated using Weblate (Tamil)
+   - Translated using Weblate (Japanese)
+   - Translated using Weblate (Japanese)
+   - Translated using Weblate (Japanese)
+   - Translated using Weblate (Japanese)
+   - Translated using Weblate (Swedish)
+   - Translated using Weblate (Swedish)
+   - Translated using Weblate (Swedish)
+   - Translated using Weblate (German)
+   - Translated using Weblate (German)
+   - Translated using Weblate (German)
+   - Translated using Weblate (German)
+   - Translated using Weblate (German)
+   - Translated using Weblate (Greek)
+   - Translated using Weblate (French)
+   - Translated using Weblate (French)
+   - Translated using Weblate (French)
+   - Translated using Weblate (French)
+   - Translated using Weblate (French)
+   - Translated using Weblate (French)
+   - Translated using Weblate (French)
+   - Translated using Weblate (French)
+   - Translated using Weblate (French)
+   - Translated using Weblate (Dutch)
+   - Translated using Weblate (Dutch)
+   - Translated using Weblate (Italian)
+   - Translated using Weblate (Italian)
+   - Translated using Weblate (Portuguese)
+   - Translated using Weblate (Portuguese)
+   - Translated using Weblate (Portuguese)
+   - Translated using Weblate (Norwegian Bokmål)
+   - Translated using Weblate (Norwegian Bokmål)
+   - Translated using Weblate (Indonesian)
+   - Translated using Weblate (Indonesian)
+   - Translated using Weblate (Indonesian)
+   - Translated using Weblate (Chinese (Simplified Han script))
+   - Translated using Weblate (Chinese (Simplified Han script))
+   - Translated using Weblate (Chinese (Simplified Han script))
+   - Translated using Weblate (Chinese (Simplified Han script))
+   - Translated using Weblate (Chinese (Simplified Han script))
+   - Translated using Weblate (Chinese (Simplified Han script))
+   - Translated using Weblate (Chinese (Simplified Han script))
+   - Translated using Weblate (Chinese (Simplified Han script))
+   - Translated using Weblate (Portuguese)
+   - Release Incus 7.3
+  [/details]
+
+  # ドキュメント<!-- Documentation -->
+  <!--
+  The Incus documentation can be found at:
+
+  https://linuxcontainers.org/incus/docs/main/
+  -->
+  Incus のドキュメントはこちらです:
+ 
+  https://incus-ja.readthedocs.io/ja/latest/ （日本語訳）
+  https://linuxcontainers.org/incus/docs/main/ （原文）
+
+  # パッケージ <!-- Packages -->
+  <!--
+  There are no official Incus packages as Incus upstream only releases regular release tarballs. Below are some available options to get Incus up and running.
+  -->
+  Incus の開発元は、通常リリースの tarball のみをリリースするため、公式の Incus パッケージはありません。Incus を実行するために使えるオプションを以下にいくつか示します。
+
+  ## Linux 上に Incus サーバーをインストールする <!-- Installing the Incus server on Linux -->
+  <!--
+  Incus is available for most common Linux distributions. You’ll find detailed installation instructions in our documentation.
+  -->
+  Incus はほとんどの一般的な Linux ディストリビューションで利用できます。インストール手順の詳細は、Incus のドキュメントを参照してください。
+
+  https://incus-ja.readthedocs.io/ja/latest/installing/ （日本語訳）
+  https://linuxcontainers.org/incus/docs/main/installing/ （原文）
+
+  ## Incus クライアントの Homebrew パッケージ <!-- Homebrew package for the Incus client -->
+  <!--
+  The client tool is available through HomeBrew for both Linux and MacOS.
+  -->
+  Homebrew 経由で、Linux と macOS 向けにクライアントツールが利用できます。
+
+  https://formulae.brew.sh/formula/incus
+
+  ## Incus クライアントの Chocolatey パッケージ <!-- Chocolatey package for the Incus client -->
+  <!--
+  The client tool is available through Chocolatey for Windows users.
+  -->
+  Chocolatey 経由で、Windows ユーザー向けにクライアントツールが利用できます。
+
+  https://community.chocolatey.org/packages/incus/7.3.0
+
+  ## Incus クライアントの Winget パッケージ <!-- Winget package for the Incus client -->
+  <!--
+  The client tool is also available through Winget for Windows users.
+  -->
+  Winget 経由で、Windows ユーザー向けにクライアントツールが利用できます。
+
+  https://winstall.app/apps/LinuxContainers.Incus
+
+  # サポート <!-- Support -->
+  <!--
+  Monthly feature releases are only supported up until the next release comes out. Users needing a longer support length and less frequent changes should consider using Incus 7.0 LTS instead.
+  -->
+  月次のフィーチャーリリースは、次のリリースがリリースされるまでのみサポートされます。より長いサポート期間と少ない変更頻度が必要な場合、代わりに Incus 7.0 LTS の使用を検討すべきです。
+
+  コミュニティサポートはこちらから <!-- Community support is provided at -->: https://discuss.linuxcontainers.org
+  商用サポートはこちらから <!-- Commercial support is available through -->: https://zabbly.com/incus
+  バグはこちらから報告できます <!-- Bugs can be reported at -->: https://github.com/lxc/incus/issues
